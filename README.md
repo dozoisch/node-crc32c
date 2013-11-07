@@ -16,10 +16,10 @@ var crc32c = require('crc32-c');
 
 var toHash = "HELLOWORLD";
 
-console.log(crc32c.compute(toHash));
+console.log(crc32c.compute(toHash).toString(16));
 ```
 
 
 ##License
 
-The plugin is under MIT license, please see the LICENSE file provided wit the module.
+The plugin is under MIT license, please see the LICENSE file provided with the module.
