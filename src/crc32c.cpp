@@ -4,9 +4,17 @@
 #include <string>
 #include <sstream>
 
-using namespace v8;
+// Check if cstdint is supported
+#if defined(__GXX_EXPERIMENTAL_CXX0X) || __cplusplus >= 201103L
+#include <cstdint>
+#else // Includ the old lib
+#include <stdint.h>
+#endif
 
 #include "impl.h"
+
+using namespace v8;
+
 
 Handle<Value> Compute( const Arguments& args )
 {
@@ -18,10 +26,10 @@ Handle<Value> Compute( const Arguments& args )
 		return scope.Close( Undefined() );
 	}
 	
-	std::string input(*v8::String::Utf8Value(args[0]));
+	std::string input(*String::Utf8Value(args[0]));
 	
-	int result;
-	bool success = compute( input.c_str(), input.length(), &result );
+	uint32_t result;
+	bool success = crc32c_compute( input.c_str(), input.length(), &result );
 	
 	if( !success ) 
 	{

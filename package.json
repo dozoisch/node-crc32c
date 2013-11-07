@@ -1,6 +1,6 @@
 {
     "name": "crc32c",
-    "version": "0.1.2",
+    "version": "0.1.3",
     "description": "CRC32C c implementation for Linux.",
     "keywords": ["crc", "crc32", "crc32c", "hash" ],
     "author": "Hugo Dozois <hugo@dozoisch.com>",

@@ -16,11 +16,11 @@ or
 ##Usage
 
 ```javascript
-var crc32c = require('crc32-c');
+var crc32c = require('crc32c');
 
 var toHash = "HELLOWORLD";
 
-console.log(crc32c.compute(toHash).toString(16));
+console.log(crc32c.compute(toHash));
 ```
 
 

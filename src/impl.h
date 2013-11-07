@@ -4,6 +4,8 @@
 extern "C" {
 #endif //__cplusplus
 
+#include <stdint.h>
+
 /**
  * Computes a CRC32C. 
  * @param char* input The input string
@@ -11,7 +13,7 @@ extern "C" {
  * @param int* result The resulting checksum
  * @return int success true|false (0|1)
  */
-int compute( const char* input, const unsigned int length, int* const result );
+int crc32c_compute( const char* input, const uint32_t length, uint32_t* const result );
 
 #ifdef __cplusplus
 }
