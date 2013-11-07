@@ -1,0 +1,16 @@
+{
+    "name": "crc32c",
+    "version": "0.1.0",
+    "description": "CRC32C c implementation for Linux.",
+    "keywords": ["crc", "crc32", "crc32c", "hash" ],
+    "author": "Hugo Dozois <hugo@dozoisch.com>",
+    "dependendices" : {},
+    "main": "./build/Release/crc32c.node",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/dozoisch/node-crc32c.git"
+    },
+    "engines": {
+        "node": ">= 0.10.0"
+    }
+}
