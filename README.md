@@ -9,6 +9,10 @@ This module is not meant for secure hashing but really for something like ETags 
 
     node-gyp configure build
 
+or 
+
+    npm install crc32c
+
 ##Usage
 
 ```javascript
