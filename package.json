@@ -1,7 +1,7 @@
 {
     "name": "crc32c",
-    "version": "0.1.4",
-    "description": "CRC32C c implementation for Linux.",
+    "version": "0.2.0",
+    "description": "CRC32C C  implementation for Linux.",
     "keywords": ["crc", "crc32", "crc32c", "hash", "castagnoli" ],
     "author": "Hugo Dozois <hugo@dozoisch.com>",
     "license": "MIT",
@@ -11,6 +11,16 @@
         "type": "git",
         "url": "https://github.com/dozoisch/node-crc32c.git"
     },
+    "bin": { "crc32c": "./crc32c.js" },
+    "files": [
+        "LICENSE",
+        "README.md",
+        "src",
+        "test",
+        "binding.gyp",
+        "crc32c.js",
+        "bin/crc32c-cli.js"
+    ],
     "engines": {
         "node": ">= 0.10.0"
     },
