@@ -7,7 +7,7 @@
 // Check if cstdint is supported
 #if defined(__GXX_EXPERIMENTAL_CXX0X) || __cplusplus >= 201103L
 #include <cstdint>
-#else // Includ the old lib
+#else // Include the old lib
 #include <stdint.h>
 #endif
 

@@ -26,7 +26,7 @@ int crc32c_compute( const char *input, const uint32_t length, uint32_t* const re
         .salg_name = "crc32c"
     };
 	
-	// Create a socket
+    // Create a socket
     if( ( sds[0] = socket( AF_ALG, SOCK_SEQPACKET, 0 ) ) == -1 )
         return FALSE;
         
@@ -36,11 +36,11 @@ int crc32c_compute( const char *input, const uint32_t length, uint32_t* const re
     if( ( sds[1] = accept( sds[0], NULL, 0 ) ) == -1 )
         return FALSE;
         
-	// Send the data to be computed
+    // Send the data to be computed
     if ( send( sds[1], input, length, MSG_MORE ) != length )
         return FALSE;
 
-	// Retrieve the result
+    // Retrieve the result
     if( read( sds[1], result, 4 ) != 4 )
         return FALSE;
     
