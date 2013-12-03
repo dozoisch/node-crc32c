@@ -1,6 +1,6 @@
 {
     "name": "crc32c",
-    "version": "0.2.1",
+    "version": "0.2.2",
     "description": "CRC32C C  implementation for Linux.",
     "keywords": ["crc", "crc32", "crc32c", "hash", "castagnoli" ],
     "author": "Hugo Dozois <hugo@dozoisch.com>",
@@ -18,7 +18,7 @@
         "src",
         "test",
         "binding.gyp",
-        "crc32c.js",
+        "crc32c",
         "bin/crc32c-cli.js"
     ],
     "engines": {
