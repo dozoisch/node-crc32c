@@ -9,7 +9,7 @@ This module is not meant for secure hashing but really for something like ETags 
 
     node-gyp configure build
 
-or 
+or
 
     npm install crc32c
 
@@ -19,9 +19,12 @@ From JavaScript:
 ```javascript
 var crc32c = require('crc32c');
 
+// Works with strings!
 var toHash = "HELLOWORLD";
-
 console.log(crc32c.compute(toHash));
+
+// Or buffers!
+console.log(crc32c.compute(new Buffer('{"jsonString":"property1","jsonArray":["arr1","arr2","arr3"]}')));
 ```
 
 From cli:

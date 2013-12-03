@@ -1,6 +1,5 @@
-#! /usr/bin/env node
 ;(function () {
-
+'use strict';
 var fs = require('fs');
 var crc32c = require('./crc32c.node');
 
@@ -17,6 +16,11 @@ console.log(filename);
 
 var s = fs.ReadStream(filename);
 
-s.on('data', function (data) { result = crc32c.compute(data); });
-s.on('end', function () { console.log(result); });
-})();
+var dataChunks = [];
+
+s.on('data', function (data) { dataChunks.push(data) });
+s.on('end', function () {
+    console.log(crc32c.compute(Buffer.concat(dataChunks)));
+});
+
+})(); /* end of anonymous function */
