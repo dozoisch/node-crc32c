@@ -13,13 +13,13 @@
                     "action_name": "symlink",
                     "inputs": [ "<@(PRODUCT_DIR)/crc32c.node" ],
                     "outputs": [ "<(module_root_dir)/bin/crc32c.node" ],
-                    "action": [ 
-                        "ln", "-s",
+                    "action": [
+                        "ln", "-fs",
                         "<@(PRODUCT_DIR)/crc32c.node",
                         "<(module_root_dir)/bin/crc32c.node"
                     ]
                 }
             ]
-        }        	
+        }
     ]
 }

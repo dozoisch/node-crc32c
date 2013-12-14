@@ -6,14 +6,31 @@ extern "C" {
 
 #include <stdint.h>
 
+typedef enum { ST_SUCCESS, ST_SOCKET_CREATE_FAILED, ST_SOCKET_BIND_FAILED, ST_SOCKET_ACCEPT_FAILED, ST_SOCKET_SEND_FAILED, ST_SOCKET_READ_FAILED } CRC32C_Status;
+
 /**
- * Computes a CRC32C. 
+ * Creates a socket for the checksum
+ * @param int[2] the two identifiers of the socket created
+ * @return CRC32C_Status Enum of the success/error
+ */
+CRC32C_Status crc32c_init( int sockets[2] );
+
+/**
+ * Computes a CRC32C.
+ * @param int[2] the two identifiers of the socket to use
  * @param char* input The input string
  * @param uint length The length of the string
  * @param int* result The resulting checksum
- * @return int success true|false (0|1)
+ * @return CRC32C_Status Enum of the success/error
  */
-int crc32c_compute( const char* input, const uint32_t length, uint32_t* const result );
+CRC32C_Status crc32c_compute( const int sockets[2], const char* input, const uint32_t length, uint32_t* const result );
+
+/**
+ * Closes sockets
+ * @param int[2] the two identifiers of the socket to close
+ */
+CRC32C_Status crc32c_close( int sockets[2] );
+
 
 #ifdef __cplusplus
 }

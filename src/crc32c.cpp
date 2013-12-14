@@ -27,28 +27,48 @@ Handle<Value> Compute( const Arguments& args )
 		return scope.Close( Undefined() );
 	}
 	uint32_t result;
-	bool success;
-	if(args[0]->IsObject())
+	CRC32C_Status status;
+
+	int sockets[2] = { -1, -1 };
+	status = crc32c_init( sockets );
+	if ( status == ST_SUCCESS )
 	{
-		char* input = node::Buffer::Data(args[0]->ToObject());
-		uint32_t length = node::Buffer::Length(args[0]->ToObject());
-		success = crc32c_compute( input, length, &result );
-	}
-	else
-	{
+		result = 0x00000000;
 		std::string input(*String::Utf8Value(args[0]));
-		success = crc32c_compute( input.c_str(), input.length(), &result );
+		status = crc32c_compute( sockets, input.c_str(), input.length(), &result );
 	}
+	crc32c_close( sockets );
 
-	if( !success )
+	switch (status)
 	{
-		ThrowException( Exception::TypeError( String::New( "Failed to compute the checksum" ) ) );
-		return scope.Close( Undefined() );
+		case ST_SUCCESS:
+		{
+			std::stringstream ss;
+			ss << std::hex << result;
+			return scope.Close( String::New( ss.str().c_str() ) );
+		}
+		case ST_SOCKET_CREATE_FAILED:
+			ThrowException( Exception::Error( String::New( "Failed to create the socket ")));
+			break;
+
+		case ST_SOCKET_BIND_FAILED:
+			ThrowException( Exception::Error( String::New( "Failed to bind the socket ")));
+			break;
+
+		case ST_SOCKET_ACCEPT_FAILED:
+			ThrowException( Exception::Error( String::New( "Socket failed to accept data ")));
+			break;
+
+		case ST_SOCKET_SEND_FAILED:
+			ThrowException( Exception::Error( String::New( "Failed to send to socket")));
+			break;
+
+		case ST_SOCKET_READ_FAILED:
+			ThrowException( Exception::Error( String::New( "Failed to read from socket")));
+			break;
 	}
 
-	std::stringstream ss;
-	ss << std::hex << result;
-	return scope.Close( String::New( ss.str().c_str() ) );
+	return scope.Close( Undefined() );
 }
 
 void Init( Handle<Object> exports )
