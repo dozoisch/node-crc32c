@@ -13,9 +13,9 @@
 #endif
 
 #include "impl.h"
+#include "batcher.h"
 
 using namespace v8;
-
 
 Handle<Value> Compute( const Arguments& args )
 {
@@ -34,7 +34,7 @@ Handle<Value> Compute( const Arguments& args )
 	if ( status == ST_SUCCESS )
 	{
 		result = 0x00000000;
-		std::string input(*String::Utf8Value(args[0]));
+		std::string input( *String::Utf8Value( args[0] ) );
 		status = crc32c_compute( sockets, input.c_str(), input.length(), &result );
 	}
 	crc32c_close( sockets );
@@ -48,23 +48,26 @@ Handle<Value> Compute( const Arguments& args )
 			return scope.Close( String::New( ss.str().c_str() ) );
 		}
 		case ST_SOCKET_CREATE_FAILED:
-			ThrowException( Exception::Error( String::New( "Failed to create the socket ")));
+			ThrowException( Exception::Error( String::New( "Failed to create the socket" ) ) );
 			break;
 
 		case ST_SOCKET_BIND_FAILED:
-			ThrowException( Exception::Error( String::New( "Failed to bind the socket ")));
+			ThrowException( Exception::Error( String::New( "Failed to bind the socket" ) ) );
 			break;
 
 		case ST_SOCKET_ACCEPT_FAILED:
-			ThrowException( Exception::Error( String::New( "Socket failed to accept data ")));
+			ThrowException( Exception::Error( String::New( "Socket failed to accept data" ) ) ) ;
 			break;
 
 		case ST_SOCKET_SEND_FAILED:
-			ThrowException( Exception::Error( String::New( "Failed to send to socket")));
+			ThrowException( Exception::Error( String::New( "Failed to send to socket" ) ) );
 			break;
 
 		case ST_SOCKET_READ_FAILED:
-			ThrowException( Exception::Error( String::New( "Failed to read from socket")));
+			ThrowException( Exception::Error( String::New( "Failed to read from socket" ) ) );
+			break;
+		default:
+			ThrowException( Exception::Error( String::New( "Failed" ) ) );
 			break;
 	}
 
@@ -75,6 +78,7 @@ void Init( Handle<Object> exports )
 {
 	exports->Set( String::NewSymbol( "compute" ),
 		FunctionTemplate::New( Compute )->GetFunction() );
+	Batcher::Init( exports );
 }
 
 NODE_MODULE( crc32c, Init )

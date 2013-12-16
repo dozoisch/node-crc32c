@@ -15,6 +15,8 @@ or
 
 ##Usage
 
+### For small number of computation needed
+
 From JavaScript:
 ```javascript
 var crc32c = require('crc32c');
@@ -25,6 +27,20 @@ console.log(crc32c.compute(toHash));
 
 // Or buffers!
 console.log(crc32c.compute(new Buffer('{"jsonString":"property1","jsonArray":["arr1","arr2","arr3"]}')));
+```
+
+### For batch computing
+
+*With >100 iterations I get a 3x perf improvements. It really shows up at more than 10K iterations though.*
+
+From JavaScript:
+```javascript
+var crc32c = require('crc32c');
+var Batcher = new crc32c.Batcher(); // You can create as many as you want. Every instance will use a single socket.
+var Batcher.openSocket();
+console.log(Batcher.compute(new Buffer('{"jsonString":"property1","jsonArray":["arr1","arr2","arr3"]}')));
+// ... Iterate on many strings/buffer/etc.
+Batcher.closeSocket();
 ```
 
 From cli:

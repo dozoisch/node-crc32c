@@ -2,7 +2,7 @@
     "targets": [
         {
             "target_name": "crc32c",
-            "sources": [ "src/crc32c.cpp", "src/impl.c" ]
+            "sources": [ "src/crc32c.cc", "src/impl.c", "src/batcher.cc" ]
         },
         {
             "target_name": "after_build",
