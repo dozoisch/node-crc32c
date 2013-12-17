@@ -17,6 +17,8 @@ or
 
 ### For small number of computation needed
 
+You have the function `compute`, which takes only one argument, the string to hash.
+
 From JavaScript:
 ```javascript
 var crc32c = require('crc32c');
@@ -27,11 +29,16 @@ console.log(crc32c.compute(toHash));
 
 // Or buffers!
 console.log(crc32c.compute(new Buffer('{"jsonString":"property1","jsonArray":["arr1","arr2","arr3"]}')));
+
+// Or String Objects!
+console.log(crc32c.compute(new String('A superb string!')));
 ```
 
 ### For batch computing
 
 *With >100 iterations I get a 3x perf improvements. It really shows up at more than 10K iterations though.*
+
+You have to create an object called a Batcher. This object then has 3 methods: `openSocket`, `closeSocket`, and `compute`.
 
 From JavaScript:
 ```javascript
@@ -52,3 +59,10 @@ crc32c <filename>
 ##License
 
 The plugin is under MIT license, please see the LICENSE file provided with the module.
+
+
+## Benchmarks
+
+Run the script `node benchmarks/benchmarks.js`!
+
+*Soon more info.*
