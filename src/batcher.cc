@@ -128,16 +128,27 @@ Handle<Value> Batcher::Compute( const Arguments& args )
     }
 
     Batcher* obj = ObjectWrap::Unwrap<Batcher>( args.This() );
-
+    CRC32C_Status status;
     uint32_t result = 0x00000000;
-    std::string input( *String::Utf8Value( args[0] ) );
-    CRC32C_Status status = crc32c_compute( obj->_sockets, input.c_str(), input.length(), &result );
+
+    if ( args[0]->IsString() || args[0]->IsStringObject() ) {
+        std::string input( *String::Utf8Value( args[0] ) );
+        status = crc32c_compute( obj->_sockets, input.c_str(), input.length(), &result );
+    }
+    else if ( node::Buffer::HasInstance( args[0] ) )
+    {
+        Local<Object> buf = args[0]->ToObject();
+        status = crc32c_compute( obj->_sockets, node::Buffer::Data( buf ), (uint32_t) node::Buffer::Length( buf ), &result );
+    }
+    else
+    {
+        ThrowException( Exception::Error ( String::New( "Invalid input, the Input has to be of String, StringObject or Buffer" ) ) );
+        return scope.Close( Undefined() );
+    }
 
     if ( status == ST_SUCCESS )
     {
-        std::stringstream ss;
-        ss << std::hex << result;
-        return scope.Close( String::New( ss.str().c_str() ) );
+         return scope.Close( Integer::NewFromUnsigned( result ) );
     }
     else
     {
