@@ -140,10 +140,15 @@ Handle<Value> Batcher::Compute( const Arguments& args )
         Local<Object> buf = args[0]->ToObject();
         status = crc32c_compute( obj->_sockets, node::Buffer::Data( buf ), (uint32_t) node::Buffer::Length( buf ), &result );
     }
-    else
+    else if ( args[0]->IsObject() )
     {
-        ThrowException( Exception::Error ( String::New( "Invalid input, the Input has to be of String, StringObject or Buffer" ) ) );
+        ThrowException( Exception::Error ( String::New( "Invalid input. Cannot compute objects. The Input has to be of String, StringObject or Buffer, Number" ) ) );
         return scope.Close( Undefined() );
+    }
+    else // Numbers mainly
+    {
+        std::string input( *String::Utf8Value( args[0] ) );
+        status = crc32c_compute( obj->_sockets, input.c_str(), input.length(), &result );
     }
 
     if ( status == ST_SUCCESS )
