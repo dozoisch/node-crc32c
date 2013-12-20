@@ -1,7 +1,7 @@
 {
     "name": "crc32c",
-    "version": "0.4.0",
-    "description": "CRC32C C  implementation for Linux.",
+    "version": "0.4.1",
+    "description": "CRC32C C  implementation for Linux. Supports strings, String Objects and Buffers!",
     "keywords": [ "crc", "crc32", "crc32c", "hash", "castagnoli" ],
     "author": "Hugo Dozois <hugo@dozoisch.com>",
     "license": "MIT",
@@ -21,10 +21,14 @@
         "README.md",
         "src",
         "test",
+        "benchmarks",
         "binding.gyp",
         "crc32c",
         "bin/crc32c-cli.js"
     ],
+    "scripts": {
+        "test": "node test/test.js"
+    },
     "engines": {
         "node": ">= 0.10.0"
     },

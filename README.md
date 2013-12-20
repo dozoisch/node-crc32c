@@ -3,6 +3,8 @@ Node-crc32c
 
 Basic C  modules for NodeJS with crc32c (Castagnoli) implementation for Linux. The implementation uses the native Linux library "AF\_ALG".
 
+It supports strings, string objects, buffers, numbers! Works well with mongoose. Just do a toString on the entity to hash!
+
 This module is not meant for secure hashing but really for something like ETags or anything that is easier to compare using a hash than the full string.
 
 ##Building
