@@ -1,0 +1,40 @@
+Note, I've ran the benchmarks on a setup that was not optimal, the times might not represent what you will get, though the ratios between the different tests should be representative of reality.
+
+Using crc32c v0.4.1
+Using SSE42. v1.1.3
+Using crc32 v0.2.2
+
+100000 calls to calculate CRC with CRC32C AF_ALG, single Socket...
+	TEST_STRING_1024: 241ms
+	TEST_STRING_2048: 241ms
+	TEST_BUFFER_1024: 153ms
+	TEST_BUFFER_2048: 169ms
+	TEST_STRING_OBJECT_1024: 317ms
+	TEST_STRING_OBJECT_2048: 349ms
+100000 calls to calculate CRC with CRC32C AF_ALG, multi Socket...
+	TEST_STRING_1024: 1056ms
+	TEST_STRING_2048: 1110ms
+	TEST_BUFFER_1024: 876ms
+	TEST_BUFFER_2048: 871ms
+	TEST_STRING_OBJECT_1024: 1111ms
+	TEST_STRING_OBJECT_2048: 1152ms
+100000 calls to calculate CRC with SSE4.2...
+	TEST_STRING_1024: 73ms
+	TEST_STRING_2048: 93ms
+	TEST_BUFFER_1024: 61ms
+	TEST_BUFFER_2048: 81ms
+100000 calls to calculate CRC with pure JS CRC32 (table-based)...
+	TEST_STRING_1024: 14568ms
+	TEST_STRING_2048: 28875ms
+	TEST_BUFFER_1024: 1363ms
+	TEST_BUFFER_2048: 2835ms
+	TEST_STRING_OBJECT_1024: 16051ms
+	TEST_STRING_OBJECT_2048: 36249ms
+100000 calls to calculate CRC with pure JS CRC32 (direct)...
+	TEST_STRING_1024: 23463ms
+	TEST_STRING_2048: 45034ms
+	TEST_BUFFER_1024: 6956ms
+	TEST_BUFFER_2048: 14625ms
+	TEST_STRING_OBJECT_1024: 36724ms
+	TEST_STRING_OBJECT_2048: 72807ms
+
