@@ -1,5 +1,6 @@
 {
     "name": "crc32c",
+    "version": "0.4.2",
     "version": "0.4.1",
     "description": "CRC32C C  implementation for Linux. Supports strings, String Objects and Buffers!",
     "keywords": [ "crc", "crc32", "crc32c", "hash", "castagnoli" ],
