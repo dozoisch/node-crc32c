@@ -1,5 +1,6 @@
 'use strict';
 var crc32c = require('../bin/crc32c');
+var should = require('should');
 
 // 1024b ytes
 var String1024 = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi mollis cursus metus vel tristique. Proin congue massa massa, a malesuada dolor ullamcorper a. Nulla eget leo vel orci venenatis placerat. Donec semper condimentum justo, vel sollicitudin dolor consequat id. Nunc sed aliquet felis, eget congue nisi. Mauris eu justo suscipit, elementum turpis ut, molestie tellus. Mauris ornare rutrum fringilla. Nulla dignissim luctus pretium. Nullam nec eros hendrerit sapien pellentesque sollicitudin. Integer eget ligula dui. Mauris nec cursus nibh. Nunc interdum elementum leo, eu sagittis eros sodales nec. Duis dictum nulla sed tincidunt malesuada. Quisque in vulputate sapien. Sed sit amet tellus a est porta rhoncus sed eu metus. Mauris non pulvinar nisl, volutpat luctus enim. Suspendisse est nisi, sagittis at risus quis, ultricies rhoncus sem. Donec ullamcorper purus eget sapien facilisis, eu eleifend felis viverra. Suspendisse elit neque, semper aliquet neque sed, egestas tempus leo. Duis condimentum turpis duis.';
@@ -13,34 +14,67 @@ var n_float_2 = 3.141592654;
 
 // different test cases
 var tests = {
-    TEST_STRING_1024 : String1024,
-    TEST_STRING_2048 : String2048,
-    TEST_BUFFER_1024 : new Buffer( String1024 ),
-    TEST_BUFFER_2048 : new Buffer( String2048 ),
-    TEST_STRING_OBJECT_1024 : new String( String1024 ),
-    TEST_STRING_OBJECT_2048 : new String( String2048 ),
-    TEST_INTEGER_1: n_int_1,
-    TEST_INTEGER_2: n_int_2,
-    TEST_FLOAT_1: n_float_1,
-    TEST_FLOAT_2: n_float_2
+  TEST_STRING_1024 : String1024,
+  TEST_STRING_2048 : String2048,
+  TEST_BUFFER_1024 : new Buffer( String1024 ),
+  TEST_BUFFER_2048 : new Buffer( String2048 ),
+  TEST_STRING_OBJECT_1024 : new String( String1024 ),
+  TEST_STRING_OBJECT_2048 : new String( String2048 ),
+  TEST_INTEGER_1: n_int_1,
+  TEST_INTEGER_2: n_int_2,
+  TEST_FLOAT_1: n_float_1,
+  TEST_FLOAT_2: n_float_2
 };
 
+// Expected results for different test cases
+var expectedResults = [
+  1796588439, // TEST_STRING_1024 :
+  -239795962, // TEST_STRING_2048
+  1796588439, // TEST_BUFFER_1024
+  -239795962, // TEST_BUFFER_2048
+  1796588439, // TEST_STRING_OBJECT_1024
+  -239795962, // TEST_STRING_OBJECT_2048
+  786278885, // TEST_INTEGER_1
+  386556866, // TEST_INTEGER_2
+  1859275355, // TEST_FLOAT_1
+  1217071852, // TEST_FLOAT_2
+];
 
-//*** Standard way
-console.log("Calls to calculate CRC with CRC32C AF_ALG, multi sockets...");
-Object.keys(tests).forEach(function (key) {
-    console.log("\t" + key + ": " + crc32c.compute(tests[key]));
+//*** Standard
+describe('Multi Socket (Standard)', function () {
+  Object.keys(tests).forEach(function (key, index) {
+    it('should compute for ' + key, function (done) {
+      var result = crc32c.compute(tests[key]);
+      should.exist(result);
+      result.should.equal(expectedResults[index]);
+      done();
+    });
+  });
+});
+
+describe('Single Socket (Batcher)', function () {
+  var batcher;
+  before(function (done) {
+    batcher = new crc32c.Batcher();
+    batcher.openSocket();
+    done();
+  });
+
+  Object.keys(tests).forEach(function (key, index) {
+    it('should compute for ' + key, function (done) {
+      var result = batcher.compute(tests[key]);
+      should.exist(result);
+      result.should.equal(expectedResults[index]);
+      done();
+    });
+  });
+
+  after(function (done) {
+    batcher.closeSocket();
+    done();
+  });
 });
 
 
-//*** Batcher
-var batcher = new crc32c.Batcher();
-
-console.log("\nCalls to calculate CRC with CRC32C AF_ALG, single socket...");
-batcher.openSocket();
-Object.keys(tests).forEach(function (key) {
-    console.log("\t" + key + ": " + batcher.compute(tests[key]));
-});
-batcher.closeSocket();
 
 

@@ -2,19 +2,29 @@
   "name": "crc32c",
   "version": "0.4.2",
   "description": "CRC32C C  implementation for Linux. Supports strings, String Objects and Buffers!",
-  "keywords": [ "crc", "crc32", "crc32c", "hash", "castagnoli" ],
+  "keywords": [
+    "crc",
+    "crc32",
+    "crc32c",
+    "hash",
+    "castagnoli"
+  ],
   "author": "Hugo Dozois <hugo@dozoisch.com>",
   "license": "MIT",
-  "dependencies" : {},
-  "devDependencies" : {
-    "crc32" : "latest"
+  "dependencies": {},
+  "devDependencies": {
+    "crc32": "latest",
+    "mocha": "1.20.x",
+    "should": "4.0.x"
   },
   "main": "./bin/crc32c.node",
   "repository": {
     "type": "git",
     "url": "https://github.com/dozoisch/node-crc32c.git"
   },
-  "bin": { "crc32c": "./crc32c" },
+  "bin": {
+    "crc32c": "./crc32c"
+  },
   "files": [
     "LICENSE",
     "README.md",
@@ -26,10 +36,12 @@
     "bin/crc32c-cli.js"
   ],
   "scripts": {
-    "test": "node test/test.js"
+    "test": "NODE_ENV=test ./node_modules/.bin/mocha --harmony --reporter spec ./test/test.js"
   },
   "engines": {
     "node": ">= 0.10.0"
   },
-  "os" : [ "linux" ]
+  "os": [
+    "linux"
+  ]
 }
