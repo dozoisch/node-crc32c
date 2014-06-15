@@ -2,6 +2,7 @@ Node-crc32c
 ===========
 
 Basic C  modules for NodeJS with crc32c (Castagnoli) implementation for Linux. The implementation uses the native Linux library "AF\_ALG".
+It is compatible with node 0.10 and 0.11!
 
 It supports strings, string objects, buffers, numbers! Works well with mongoose. Just do a toString on the entity to hash!
 
@@ -9,7 +10,7 @@ This module is not meant for secure hashing but really for something like ETags 
 
 ##Building
 
-    node-gyp configure build
+    make build
 
 or
 
@@ -70,9 +71,13 @@ crc32c <filename>
 The plugin is under MIT license, please see the LICENSE file provided with the module.
 
 
+## Tests
+
+You can run the test by doing `make test`. Currently the test only contains successful use case, but error handling test cases will be added soon.
+
 ## Benchmarks
 
-Run the script by doing `node benchmarks/benchmarks.js`!
+Run the script by doing `make benchmarks`!
 
 *I think that pure times are not representative of reality, since every setup will get different results. This is why I've put the times in ratio using AF_ALG batch as the base (1).*
 
