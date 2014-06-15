@@ -13,6 +13,8 @@
 
 #include "batcher.h"
 #include "impl.h"
+#include "status.h"
+#include "utils.h"
 
 using v8::FunctionTemplate;
 using v8::Handle;
@@ -35,62 +37,42 @@ NAN_METHOD(Compute)
 
     int sockets[2] = { -1, -1 };
     status = crc32c_init( sockets );
-    if ( status == ST_SUCCESS )
+    if ( status != ST_SUCCESS )
     {
-        if ( args[0]->IsString() || args[0]->IsStringObject() ) {
-            std::string input( *String::Utf8Value( args[0] ) );
-            status = crc32c_compute( sockets, input.c_str(), input.length(), &result );
-        }
-        else if ( node::Buffer::HasInstance( args[0] ) )
-        {
-            Local<Object> buf = args[0]->ToObject();
-            status = crc32c_compute( sockets, node::Buffer::Data( buf ), (uint32_t) node::Buffer::Length( buf ), &result );
-        }
-        else if ( args[0]->IsObject() )
-        {
-            NanThrowError( "Invalid input. Cannot compute objects. The Input has to be of String, StringObject or Buffer, Number" );
-            NanReturnUndefined();
-        }
-        else // Numbers mainly
-        {
-            std::string input( *String::Utf8Value( args[0] ) );
-            status = crc32c_compute( sockets, input.c_str(), input.length(), &result );
-        }
+        NanThrowError( utils::GetErrorMessage( status ).c_str() );
+        NanReturnUndefined();
     }
+
+    if ( args[0]->IsString() || args[0]->IsStringObject() )
+    {
+        std::string input( *String::Utf8Value( args[0] ) );
+        status = crc32c_compute( sockets, input.c_str(), input.length(), &result );
+    }
+    else if ( node::Buffer::HasInstance( args[0] ) )
+    {
+        Local<Object> buf = args[0]->ToObject();
+        status = crc32c_compute( sockets, node::Buffer::Data( buf ), (uint32_t) node::Buffer::Length( buf ), &result );
+    }
+    else if ( args[0]->IsObject() )
+    {
+        NanThrowError( "Invalid input. Cannot compute objects. The Input has to be of String, StringObject or Buffer, Number" );
+        NanReturnUndefined();
+    }
+    else // Numbers mainly
+    {
+        std::string input( *String::Utf8Value( args[0] ) );
+        status = crc32c_compute( sockets, input.c_str(), input.length(), &result );
+    }
+
+    if ( status != ST_SUCCESS )
+    {
+        NanThrowError( utils::GetErrorMessage( status ).c_str() );
+        NanReturnUndefined();
+    }
+
     crc32c_close( sockets );
 
-    if ( status == ST_SUCCESS )
-    {
-        NanReturnValue( NanNew<Integer>( result ) );
-    }
-
-    switch (status)
-    {
-        case ST_SOCKET_CREATE_FAILED:
-            NanThrowError( "Failed to create the socket" );
-            break;
-
-        case ST_SOCKET_BIND_FAILED:
-            NanThrowError( "Failed to bind the socket" );
-            break;
-
-        case ST_SOCKET_ACCEPT_FAILED:
-            NanThrowError( "Socket failed to accept data" ) ;
-            break;
-
-        case ST_SOCKET_SEND_FAILED:
-            NanThrowError( "Failed to send to socket" );
-            break;
-
-        case ST_SOCKET_READ_FAILED:
-            NanThrowError( "Failed to read from socket" );
-            break;
-        default:
-            NanThrowError( "Failed" );
-            break;
-    }
-
-    NanReturnUndefined();
+    NanReturnValue( NanNew<Integer>( result ) );
 }
 
 

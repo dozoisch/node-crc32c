@@ -12,6 +12,8 @@
 #endif
 
 #include "impl.h"
+#include "utils.h"
+#include "status.h"
 
 using v8::FunctionTemplate;
 using v8::Handle;
@@ -19,28 +21,6 @@ using v8::Object;
 using v8::String;
 using v8::Integer;
 using v8::Local;
-
-namespace
-{
-Local<String> GetErrorMessage( const CRC32C_Status& status )
-{
-    switch (status)
-    {
-        case ST_SOCKET_CREATE_FAILED:
-            return NanNew<String>( "Failed to create the socket" );
-        case ST_SOCKET_BIND_FAILED:
-            return NanNew<String>( "Failed to bind the socket" );
-        case ST_SOCKET_ACCEPT_FAILED:
-            return NanNew<String>( "Socket failed to accept data" ) ;
-        case ST_SOCKET_SEND_FAILED:
-            return NanNew<String>( "Failed to send to socket" );
-        case ST_SOCKET_READ_FAILED:
-            return NanNew<String>( "Failed to read from socket" );
-        default:
-            return NanNew<String>( "Failed" );
-    }
-}
-} // end anonymous
 
 v8::Persistent<v8::FunctionTemplate> Batcher::constructor;
 
@@ -100,7 +80,7 @@ NAN_METHOD(Batcher::OpenSocket)
     }
     else
     {
-        NanThrowError( GetErrorMessage( status ) );
+        NanThrowError( utils::GetErrorMessage( status ).c_str() );
         NanReturnUndefined();
     }
 }
@@ -120,7 +100,7 @@ NAN_METHOD(Batcher::CloseSocket)
     }
     else
     {
-        NanThrowError( GetErrorMessage( status ) );
+        NanThrowError( utils::GetErrorMessage( status ).c_str() );
         NanReturnUndefined();
     }
 }
@@ -165,7 +145,7 @@ NAN_METHOD(Batcher::Compute)
     }
     else
     {
-        NanThrowError( GetErrorMessage( status ) );
+        NanThrowError( utils::GetErrorMessage( status ).c_str() );
         NanReturnUndefined();
     }
 }

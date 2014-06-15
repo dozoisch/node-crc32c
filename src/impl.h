@@ -5,8 +5,8 @@ extern "C" {
 #endif //__cplusplus
 
 #include <stdint.h>
+#include "status.h"
 
-typedef enum { ST_SUCCESS, ST_SOCKET_CREATE_FAILED, ST_SOCKET_BIND_FAILED, ST_SOCKET_ACCEPT_FAILED, ST_SOCKET_SEND_FAILED, ST_SOCKET_READ_FAILED } CRC32C_Status;
 
 /**
  * Creates a socket for the checksum

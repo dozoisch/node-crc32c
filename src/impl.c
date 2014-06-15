@@ -23,7 +23,7 @@ CRC32C_Status crc32c_init( int sockets[2] )
     if( ( sockets[0] = socket( AF_ALG, SOCK_SEQPACKET, 0 ) ) == -1 )
         return ST_SOCKET_CREATE_FAILED;
 
-    if( bind( sockets[0], (struct sockaddr *) &sa, sizeof(sa) ) != 0 )
+    if( bind( sockets[0], (struct sockaddr *) &sa, sizeof(sa) ) == -1 )
         return ST_SOCKET_BIND_FAILED;
 
     if( ( sockets[1] = accept( sockets[0], NULL, 0 ) ) == -1 )
