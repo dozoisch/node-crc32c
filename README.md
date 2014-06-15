@@ -1,6 +1,8 @@
 Node-crc32c
 ===========
 
+[![Build Status][travis.img]][travis.url]
+
 Basic C  modules for NodeJS with crc32c (Castagnoli) implementation for Linux. The implementation uses the native Linux library "AF\_ALG".
 It is compatible with node 0.10 and 0.11!
 
@@ -106,3 +108,6 @@ Run the script by doing `make benchmarks`!
 - The single-socket can improve the performance by a lot when needing to do a lot of calculations
 - Yes the assembly implementation is faster, and that is not really surprising. Why taking crc32c? Because it's a cross platform implementation, that uses a core linux library (so very robust implementation). Also, this library support string objects.
 - The pure JS library is waaaaaaaaaay slower with 1024 bytes strings and gets slower and slower when the string is bigger. The C implementation is pretty stable, and the only thing slowing it in the unboxing from JavaScript to pure C.
+
+[travis.img]: https://api.travis-ci.org/dozoisch/node-crc32c.svg
+[travis.url]: https://travis-ci.org/dozoisch/node-crc32c
