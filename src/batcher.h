@@ -1,37 +1,37 @@
 #ifndef CRC32C_BATCHER
 #define CRC32C_BATCHER
 #include <node.h>
-#include <v8.h>
+#include <nan.h>
 #include <string>
 
 class Batcher : public node::ObjectWrap
 {
 
 public:
-    static void Init( v8::Handle<v8::Object> target );
-    static v8::Handle<v8::Value> NewInstance( const v8::Arguments& args );
+    static void Init( v8::Handle<v8::Object> );
+    static v8::Handle<v8::Value> NewInstance();
 
 private: // functions
     Batcher();
     ~Batcher();
 
-    static v8::Persistent<v8::Function> constructor;
-    static v8::Handle<v8::Value> New( const v8::Arguments& args );
+    static v8::Persistent<v8::FunctionTemplate> constructor;
+    static NAN_METHOD(New);
 
     /**
      * Opens a AF_ALG Socket and saves it in _sockets
      */
-    static v8::Handle<v8::Value> OpenSocket( const v8::Arguments& args );
+    static NAN_METHOD(OpenSocket);
 
     /**
      * Close its _sockets
      */
-    static v8::Handle<v8::Value> CloseSocket( const v8::Arguments& args );
+    static NAN_METHOD(CloseSocket);
 
     /**
      * Compute using _sockets. Takes one param which is the thing to compute
      */
-    static v8::Handle<v8::Value> Compute( const v8::Arguments& args );
+    static NAN_METHOD(Compute);
 
 private: // members
     int _sockets[2];

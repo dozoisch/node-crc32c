@@ -2,7 +2,7 @@
   "targets": [
   {
     "target_name": "crc32c",
-    "sources": [ "src/crc32c.cc", "src/impl.c" ],
+    "sources": [ "src/crc32c.cc", "src/batcher.cc", "src/impl.c" ],
     "include_dirs" : [
       "<!(node -e \"require('nan')\")"
     ]

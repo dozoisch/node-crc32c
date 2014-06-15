@@ -11,6 +11,7 @@
 #include <stdint.h>
 #endif
 
+#include "batcher.h"
 #include "impl.h"
 
 using v8::FunctionTemplate;
@@ -92,11 +93,11 @@ NAN_METHOD(Compute)
     NanReturnUndefined();
 }
 
+
 void Init( Handle<Object> exports )
 {
-    exports->Set( NanNew<String>( "compute" ),
-        NanNew<FunctionTemplate>( Compute )->GetFunction() );
-    //Batcher::Init( exports );
+    NODE_SET_METHOD( exports, "compute", Compute);
+    Batcher::Init(exports);
 }
 
 NODE_MODULE( crc32c, Init )

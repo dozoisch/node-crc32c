@@ -13,7 +13,12 @@
 
 #include "impl.h"
 
-using namespace v8;
+using v8::FunctionTemplate;
+using v8::Handle;
+using v8::Object;
+using v8::String;
+using v8::Integer;
+using v8::Local;
 
 namespace
 {
@@ -22,22 +27,22 @@ Local<String> GetErrorMessage( const CRC32C_Status& status )
     switch (status)
     {
         case ST_SOCKET_CREATE_FAILED:
-            return String::New( "Failed to create the socket" );
+            return NanNew<String>( "Failed to create the socket" );
         case ST_SOCKET_BIND_FAILED:
-            return String::New( "Failed to bind the socket" );
+            return NanNew<String>( "Failed to bind the socket" );
         case ST_SOCKET_ACCEPT_FAILED:
-            return String::New( "Socket failed to accept data" ) ;
+            return NanNew<String>( "Socket failed to accept data" ) ;
         case ST_SOCKET_SEND_FAILED:
-            return String::New( "Failed to send to socket" );
+            return NanNew<String>( "Failed to send to socket" );
         case ST_SOCKET_READ_FAILED:
-            return String::New( "Failed to read from socket" );
+            return NanNew<String>( "Failed to read from socket" );
         default:
-            return String::New( "Failed" );
+            return NanNew<String>( "Failed" );
     }
 }
 } // end anonymous
 
-Persistent<Function> Batcher::constructor;
+v8::Persistent<v8::FunctionTemplate> Batcher::constructor;
 
 Batcher::Batcher()
 {
@@ -51,36 +56,39 @@ Batcher::~Batcher()
 
 void Batcher::Init( Handle<Object> target )
 {
-    Local<FunctionTemplate> tpl = FunctionTemplate::New( New );
-
-    tpl->SetClassName( String::NewSymbol( "Batcher" ) );
+    Local<FunctionTemplate> tpl = NanNew<FunctionTemplate>( Batcher::New );
+    tpl->SetClassName( NanNew<String>( "Batcher" ) );
     tpl->InstanceTemplate()->SetInternalFieldCount( 1 );
 
-    tpl->PrototypeTemplate()->Set( String::NewSymbol( "openSocket" ),
-        FunctionTemplate::New( OpenSocket )->GetFunction() );
-    tpl->PrototypeTemplate()->Set( String::NewSymbol( "closeSocket" ),
-        FunctionTemplate::New( CloseSocket )->GetFunction() );
-    tpl->PrototypeTemplate()->Set( String::NewSymbol( "compute" ),
-        FunctionTemplate::New( Compute )->GetFunction() );
+    NODE_SET_PROTOTYPE_METHOD( tpl, "openSocket", Batcher::OpenSocket );
+    NODE_SET_PROTOTYPE_METHOD( tpl, "closeSocket", Batcher::CloseSocket );
+    NODE_SET_PROTOTYPE_METHOD( tpl, "compute", Batcher::Compute );
 
-    constructor = Persistent<Function>::New( tpl->GetFunction() );
-    target->Set( String::NewSymbol( "Batcher" ), constructor );
+    NanAssignPersistent( constructor, tpl );
+    target->Set( NanNew<String>( "Batcher" ), tpl->GetFunction() );
 }
 
-Handle<Value> Batcher::New( const Arguments& args )
+v8::Handle<v8::Value> Batcher::NewInstance()
 {
-    HandleScope scope;
+    NanScope();
+    v8::Local<v8::FunctionTemplate> constructorHandle = NanNew(constructor);
+    return constructorHandle->GetFunction()->NewInstance(0, NULL);
+}
+
+NAN_METHOD(Batcher::New)
+{
+    NanScope();
 
     Batcher* obj = new Batcher();
     obj->Wrap( args.This() );
 
-    return args.This();
+    NanReturnValue(args.This());
 }
 
-Handle<Value> Batcher::OpenSocket( const Arguments& args )
+NAN_METHOD(Batcher::OpenSocket)
 {
-    HandleScope scope;
-    Batcher* obj = ObjectWrap::Unwrap<Batcher>( args.This() );
+    NanScope();
+    Batcher* obj = node::ObjectWrap::Unwrap<Batcher>( args.This() );
 
     CRC32C_Status status;
 
@@ -88,19 +96,19 @@ Handle<Value> Batcher::OpenSocket( const Arguments& args )
 
     if ( status == ST_SUCCESS )
     {
-        return scope.Close( Boolean::New( true ) );
+        NanReturnValue( NanTrue() );
     }
     else
     {
-        ThrowException( Exception::Error( GetErrorMessage( status ) ) );
-        return scope.Close( Undefined() );
+        NanThrowError( GetErrorMessage( status ) );
+        NanReturnUndefined();
     }
 }
 
-Handle<Value> Batcher::CloseSocket( const Arguments& args )
+NAN_METHOD(Batcher::CloseSocket)
 {
-    HandleScope scope;
-    Batcher* obj = ObjectWrap::Unwrap<Batcher>( args.This() );
+    NanScope();
+    Batcher* obj = node::ObjectWrap::Unwrap<Batcher>( args.This() );
 
     CRC32C_Status status;
 
@@ -108,26 +116,26 @@ Handle<Value> Batcher::CloseSocket( const Arguments& args )
 
     if ( status == ST_SUCCESS )
     {
-        return scope.Close( Boolean::New( true ) );
+        NanReturnValue( NanTrue() );
     }
     else
     {
-        ThrowException( Exception::Error( GetErrorMessage( status ) ) );
-        return scope.Close( Undefined() );
+        NanThrowError( GetErrorMessage( status ) );
+        NanReturnUndefined();
     }
 }
 
-Handle<Value> Batcher::Compute( const Arguments& args )
+NAN_METHOD(Batcher::Compute)
 {
-    HandleScope scope;
+    NanScope();
 
     if( args.Length() < 1 )
     {
-        ThrowException( Exception::TypeError( String::New( "Expected 1 argument" ) ) );
-        return scope.Close( Undefined() );
+        NanThrowError( "Expected 1 argument" );
+        NanReturnUndefined();
     }
 
-    Batcher* obj = ObjectWrap::Unwrap<Batcher>( args.This() );
+    Batcher* obj = node::ObjectWrap::Unwrap<Batcher>( args.This() );
     CRC32C_Status status;
     uint32_t result = 0x00000000;
 
@@ -142,8 +150,8 @@ Handle<Value> Batcher::Compute( const Arguments& args )
     }
     else if ( args[0]->IsObject() )
     {
-        ThrowException( Exception::Error ( String::New( "Invalid input. Cannot compute objects. The Input has to be of String, StringObject or Buffer, Number" ) ) );
-        return scope.Close( Undefined() );
+        NanThrowError( "Invalid input. Cannot compute objects. The Input has to be of String, StringObject or Buffer, Number" ) ;
+        NanReturnUndefined();
     }
     else // Numbers mainly
     {
@@ -153,11 +161,11 @@ Handle<Value> Batcher::Compute( const Arguments& args )
 
     if ( status == ST_SUCCESS )
     {
-         return scope.Close( Integer::NewFromUnsigned( result ) );
+         NanReturnValue( NanNew<Integer>( result ) );
     }
     else
     {
-        ThrowException( Exception::Error( GetErrorMessage( status ) ) );
-        return scope.Close( Undefined() );
+        NanThrowError( GetErrorMessage( status ) );
+        NanReturnUndefined();
     }
 }
