@@ -1,6 +1,6 @@
 #include <node.h>
-#include <v8.h>
 #include <node_buffer.h>
+#include <nan.h>
 
 #include <string>
 
@@ -12,18 +12,22 @@
 #endif
 
 #include "impl.h"
-#include "batcher.h"
 
-using namespace v8;
+using v8::FunctionTemplate;
+using v8::Handle;
+using v8::Object;
+using v8::String;
+using v8::Integer;
+using v8::Local;
 
-Handle<Value> Compute( const Arguments& args )
+NAN_METHOD(Compute)
 {
-    HandleScope scope;
+    NanScope();
 
     if( args.Length() < 1 )
     {
-        ThrowException( Exception::TypeError( String::New( "Expected 1 argument" ) ) );
-        return scope.Close( Undefined() );
+        NanThrowError("Expected 1 argument" );
+        NanReturnUndefined();
     }
     uint32_t result;
     CRC32C_Status status;
@@ -43,8 +47,8 @@ Handle<Value> Compute( const Arguments& args )
         }
         else if ( args[0]->IsObject() )
         {
-            ThrowException( Exception::Error ( String::New( "Invalid input. Cannot compute objects. The Input has to be of String, StringObject or Buffer, Number" ) ) );
-            return scope.Close( Undefined() );
+            NanThrowError( "Invalid input. Cannot compute objects. The Input has to be of String, StringObject or Buffer, Number" );
+            NanReturnUndefined();
         }
         else // Numbers mainly
         {
@@ -56,43 +60,43 @@ Handle<Value> Compute( const Arguments& args )
 
     if ( status == ST_SUCCESS )
     {
-        return scope.Close( Integer::NewFromUnsigned( result ) );
+        NanReturnValue( NanNew<Integer>( result ) );
     }
 
     switch (status)
     {
         case ST_SOCKET_CREATE_FAILED:
-            ThrowException( Exception::Error( String::New( "Failed to create the socket" ) ) );
+            NanThrowError( "Failed to create the socket" );
             break;
 
         case ST_SOCKET_BIND_FAILED:
-            ThrowException( Exception::Error( String::New( "Failed to bind the socket" ) ) );
+            NanThrowError( "Failed to bind the socket" );
             break;
 
         case ST_SOCKET_ACCEPT_FAILED:
-            ThrowException( Exception::Error( String::New( "Socket failed to accept data" ) ) ) ;
+            NanThrowError( "Socket failed to accept data" ) ;
             break;
 
         case ST_SOCKET_SEND_FAILED:
-            ThrowException( Exception::Error( String::New( "Failed to send to socket" ) ) );
+            NanThrowError( "Failed to send to socket" );
             break;
 
         case ST_SOCKET_READ_FAILED:
-            ThrowException( Exception::Error( String::New( "Failed to read from socket" ) ) );
+            NanThrowError( "Failed to read from socket" );
             break;
         default:
-            ThrowException( Exception::Error( String::New( "Failed" ) ) );
+            NanThrowError( "Failed" );
             break;
     }
 
-    return scope.Close( Undefined() );
+    NanReturnUndefined();
 }
 
 void Init( Handle<Object> exports )
 {
-    exports->Set( String::NewSymbol( "compute" ),
-        FunctionTemplate::New( Compute )->GetFunction() );
-    Batcher::Init( exports );
+    exports->Set( NanNew<String>( "compute" ),
+        NanNew<FunctionTemplate>( Compute )->GetFunction() );
+    //Batcher::Init( exports );
 }
 
 NODE_MODULE( crc32c, Init )

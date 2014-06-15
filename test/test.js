@@ -32,13 +32,13 @@ Object.keys(tests).forEach(function (key) {
     console.log("\t" + key + ": " + crc32c.compute(tests[key]));
 });
 
-//*** Batcher
-var batcher = new crc32c.Batcher();
-console.log("\nCalls to calculate CRC with CRC32C AF_ALG, single socket...");
-batcher.openSocket();
-Object.keys(tests).forEach(function (key) {
-    console.log("\t" + key + ": " + batcher.compute(tests[key]));
-});
-batcher.closeSocket();
+// //*** Batcher
+// var batcher = new crc32c.Batcher();
+// console.log("\nCalls to calculate CRC with CRC32C AF_ALG, single socket...");
+// batcher.openSocket();
+// Object.keys(tests).forEach(function (key) {
+//     console.log("\t" + key + ": " + batcher.compute(tests[key]));
+// });
+// batcher.closeSocket();
 
 
