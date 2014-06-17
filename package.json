@@ -30,6 +30,7 @@
   "files": [
     "LICENSE",
     "README.md",
+    "HISTORY.md",
     "src",
     "test",
     "benchmarks",
