@@ -12,7 +12,7 @@
   "author": "Hugo Dozois <hugo@dozoisch.com>",
   "license": "MIT",
   "dependencies": {
-    "nan": "1.2.x"
+    "nan": "^1.8"
   },
   "devDependencies": {
     "crc32": "latest",
