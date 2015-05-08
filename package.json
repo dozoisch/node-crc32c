@@ -1,6 +1,6 @@
 {
   "name": "crc32c",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "description": "CRC32C C  implementation for Linux. Supports strings, String Objects and Buffers!",
   "keywords": [
     "crc",
