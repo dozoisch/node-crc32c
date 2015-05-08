@@ -1,4 +1,8 @@
-all: test
+all: install test
+
+install:
+	npm install -g node-gyp
+	npm install .
 
 build: clean configure compile
 
@@ -7,7 +11,6 @@ configure:
 
 compile: configure
 	node-gyp build
-	npm install .
 
 test: build
 	npm test
@@ -19,4 +22,4 @@ clean:
 	node-gyp clean
 
 
-.PHONY: clean test build benchmarks
+.PHONY: clean test build benchmarks install
